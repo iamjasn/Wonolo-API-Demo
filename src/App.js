@@ -58,6 +58,7 @@ class App extends Component {
               <dl>
                 <dt>{jobDetails.request_name}</dt>
                 <dd>({jobDetails.state})</dd>
+                <dd>{jobDetails.category}</dd>
                 <dt>Start Time:</dt>
                 <dd>{new Date(jobDetails.start_time).toLocaleString()}</dd>
                 <dt>Wage:</dt>

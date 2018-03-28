@@ -6,8 +6,6 @@ import Marker from './../Marker/Marker';
 import { HEATMAP_OPTIONS } from './../../constants';
 import './map.css';
 
-// const Marker = ({ text }) => <div>{text}</div>
-
 class Map extends Component {
   static defaultProps = {
     jobRequests: [],
