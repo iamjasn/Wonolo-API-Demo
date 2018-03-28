@@ -2,7 +2,7 @@ import * as qs from 'qs';
 import axios from 'axios';
 
 import { API_KEY, SECRET_KEY } from './api-keys';
-import { BASE_URL, LOCATION_REQUEST } from './constants';
+import { BASE_URL } from './constants';
 
 const getAuthToken = axios.post(
   `${BASE_URL}authenticate`,
@@ -10,11 +10,8 @@ const getAuthToken = axios.post(
 ).then(res => res.data.token)
 
 const getJobRequests = (token) => {
-  return axios.get(`${BASE_URL}job_requests?token=${token}&state=approved`)
-  .then((data) => data);
+  return axios.get(`${BASE_URL}job_requests?token=${token}`)
+  .then(data => data);
 }
 
-const getUserLocation = axios.post(LOCATION_REQUEST)
-  .then(res => res.data.location)
-
-export { getAuthToken, getUserLocation, getJobRequests };
+export { getAuthToken, getJobRequests };

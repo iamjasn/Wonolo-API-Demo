@@ -1,5 +1,23 @@
-import { GOOGLE_API_KEY } from './api-keys';
-
 export const BASE_URL = 'https://test.wonolo.com/api_v2/';
-export const LOCATION_REQUEST = `https://www.googleapis.com/geolocation/v1/geolocate?key=${GOOGLE_API_KEY}`;
-export const REVERSE_GEOCODE_REQUEST = `https://maps.googleapis.com/maps/api/geocode/json?key=${GOOGLE_API_KEY}&result_type=administrative_area_level_1&latlng=`;
+
+export const HEATMAP_OPTIONS = {
+  radius: 30,
+  intensity: 800,
+  opacity: 0.9,
+  gradient: [
+    'rgba(0, 255, 255, 0)',
+    'rgba(0, 255, 255, 1)',
+    'rgba(0, 191, 255, 1)',
+    'rgba(0, 127, 255, 1)',
+    'rgba(0, 63, 255, 1)',
+    'rgba(0, 0, 255, 1)',
+    'rgba(0, 0, 223, 1)',
+    'rgba(0, 0, 191, 1)',
+    'rgba(0, 0, 159, 1)',
+    'rgba(0, 0, 127, 1)',
+    'rgba(63, 0, 91, 1)',
+    'rgba(127, 0, 63, 1)',
+    'rgba(191, 0, 31, 1)',
+    'rgba(255, 0, 0, 1)'
+  ],
+}

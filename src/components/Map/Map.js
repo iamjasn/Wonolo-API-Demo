@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 
-const Marker = ({ text }) => <div>{text}</div>
+import Marker from './../Marker/Marker';
+
+import { HEATMAP_OPTIONS } from './../../constants';
+import './map.css';
+
+// const Marker = ({ text }) => <div>{text}</div>
 
 class Map extends Component {
   static defaultProps = {
@@ -14,9 +19,13 @@ class Map extends Component {
     })
   }
 
+  handleMarkerClick = (details) => {
+    this.props.onClickMarker && this.props.onClickMarker(details);
+  }
+
   render() {
     return (
-      <div style={{ height: '80vh', width: '80vw' }}>
+      <div className="map-container">
         <GoogleMapReact
           bootstrapURLKeys={{ key: this.props.googleApiKey }}
           center={this.props.center}
@@ -24,40 +33,16 @@ class Map extends Component {
           heatmapLibrary={true}
           heatmap={{
             positions: this.getHeatmap(this.props.jobRequests),
-            options: {
-              radius: 30,
-              intensity: 800,
-              opacity: 0.9,
-              gradient: [
-                'rgba(0, 255, 255, 0)',
-                'rgba(0, 255, 255, 1)',
-                'rgba(0, 191, 255, 1)',
-                'rgba(0, 127, 255, 1)',
-                'rgba(0, 63, 255, 1)',
-                'rgba(0, 0, 255, 1)',
-                'rgba(0, 0, 223, 1)',
-                'rgba(0, 0, 191, 1)',
-                'rgba(0, 0, 159, 1)',
-                'rgba(0, 0, 127, 1)',
-                'rgba(63, 0, 91, 1)',
-                'rgba(127, 0, 63, 1)',
-                'rgba(191, 0, 31, 1)',
-                'rgba(255, 0, 0, 1)'
-              ]
-            }
+            options: HEATMAP_OPTIONS,
           }}
         >
-          <Marker
-            lat={this.props.center.lat}
-            lng={this.props.center.lng}
-            text={'You'}
-          />
           {this.props.jobRequests.map((job) =>
             <Marker
               key={job.id}
               lat={job.latitude}
               lng={job.longitude}
-              text={job.wage}
+              job={job}
+              clickHandler={this.handleMarkerClick}
             />
           )}
         </GoogleMapReact>

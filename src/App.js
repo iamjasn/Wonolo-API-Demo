@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 import { GOOGLE_API_KEY } from './api-keys';
-import { REVERSE_GEOCODE_REQUEST } from './constants';
-import { getAuthToken, getUserLocation, getJobRequests } from './utils';
+import { getAuthToken, getJobRequests } from './utils';
 import Map from './components/Map/Map';
 
 import './App.css';
@@ -13,56 +11,66 @@ class App extends Component {
     super();
 
     this.state = {
+      authToken: '',
+      jobDetails: {},
+      error: null,
+      jobRequests: [],
       mapCenter: {
         lat: 37.773100,
         lng: -122.422944,
       },
-      mapZoom: 11,
-      authToken: '',
+      mapZoom: 12,
     }
   }
 
+  displayJobDetails = (jobDetails) => {
+    this.setState({ jobDetails });
+  }
+
   componentDidMount() {
-    let jobRequests;
-
-    axios.all([getAuthToken, getUserLocation])
-    .then(axios.spread((token, location) => {
-      axios.post(`${REVERSE_GEOCODE_REQUEST}${location.lat},${location.lng}`)
-      .then(res => {
-        const shortNames = res.data.results[0].address_components.map(item =>
-          item.short_name);
-
-        if (shortNames[1] !== 'US') {
-          this.setState({
-            authToken: token,
-            mapCenter: location,
-            jobRequests: [],
-          })
-          return;
-        }
-        getJobRequests(token).then(res => {
-          jobRequests = res.data.job_requests;
-
-          this.setState({
-            authToken: token,
-            mapCenter: location,
-            jobRequests: jobRequests,
-          })
-        });
-      });
-    }));
+    getAuthToken.then(token => {
+      getJobRequests(token).then(res =>
+        this.setState({
+          authToken: token,
+          jobRequests: res.data.job_requests,
+        })
+      );
+    })
+    .catch(error => {
+      this.setState({ error });
+    })
   }
 
   render() {
+    const { jobDetails } = this.state;
+
     return (
-      <div className="App">
+      <main className="App">
         <Map
           googleApiKey={GOOGLE_API_KEY}
           center={this.state.mapCenter}
           zoom={this.state.mapZoom}
           jobRequests={this.state.jobRequests}
+          onClickMarker={this.displayJobDetails}
         />
-      </div>
+          <aside className={!!jobDetails.id ? 'sidebar show' : 'sidebar'}>
+            {!!jobDetails.id &&
+              <dl>
+                <dt>{jobDetails.request_name}</dt>
+                <dd>({jobDetails.state})</dd>
+                <dt>Start Time:</dt>
+                <dd>{new Date(jobDetails.start_time).toLocaleString()}</dd>
+                <dt>Wage:</dt>
+                <dd>{jobDetails.wage}</dd>
+                <dt>Duration:</dt>
+                <dd>{jobDetails.duration/60} hours</dd>
+                {!!jobDetails.description &&
+                  <dd>{jobDetails.description}</dd>
+                }
+              </dl>
+            }
+          </aside>
+      </main>
     );
   }
 }
